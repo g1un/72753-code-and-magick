@@ -1,7 +1,7 @@
 # Личный проект «Код и Магия» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Илья Смаль](https://up.htmlacademy.ru/javascript/7/user/72753).
-* Наставник: `Неизвестно`.
+* Наставник: `Без наставника`.
 
 ---
 
