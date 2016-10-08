@@ -397,7 +397,7 @@ window.Game = (function() {
       if (evt.keyCode === 32 && !this._deactivated) {
         evt.preventDefault();
         var needToRestartTheGame = this.state.currentStatus === Verdict.WIN ||
-            this.state.currentStatus === Verdict.FAIL;
+          this.state.currentStatus === Verdict.FAIL;
         this.initializeLevelAndStart(needToRestartTheGame);
 
         window.removeEventListener('keydown', this._pauseListener);
@@ -408,18 +408,32 @@ window.Game = (function() {
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+      var x = 200;
+      var y = 0;
+      var textWidth = 300;
+      var textHeight = 150;
+
+      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      this.ctx.fillRect(x + 10, y + 10, textWidth, textHeight);
+      this.ctx.fillStyle = '#fff';
+      this.ctx.fillRect(x, y, textWidth, textHeight);
+      this.ctx.fillStyle = '#000';
+      this.ctx.font = '16px PT Mono';
+      this.ctx.textBaseline = 'hanging';
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          this.ctx.fillText('you have won!', x + 10, 10);
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          this.ctx.fillText('you have failed!', x + 10, 10);
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          this.ctx.fillText('game is on pause!', x + 10, 10);
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          this.ctx.fillText('welcome to the game!', x + 10, 10);
+          this.ctx.fillText('Press Space to start', x + 10, 30);
           break;
       }
     },
@@ -533,8 +547,8 @@ window.Game = (function() {
             })[0];
 
             return me.state === ObjectState.DISPOSED ?
-                Verdict.FAIL :
-                Verdict.CONTINUE;
+              Verdict.FAIL :
+              Verdict.CONTINUE;
           },
 
           /**
@@ -553,8 +567,8 @@ window.Game = (function() {
            */
           function(state) {
             return Date.now() - state.startTime > 3 * 60 * 1000 ?
-                Verdict.FAIL :
-                Verdict.CONTINUE;
+              Verdict.FAIL :
+              Verdict.CONTINUE;
           }
         ];
       }
