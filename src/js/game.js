@@ -410,30 +410,54 @@ window.Game = (function() {
     _drawPauseScreen: function() {
       var x = 200;
       var y = 0;
-      var textWidth = 300;
-      var textHeight = 150;
+      var messageWidth = 300;
+      var messageHeight = 150;
 
       this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-      this.ctx.fillRect(x + 10, y + 10, textWidth, textHeight);
+      this.ctx.fillRect(x + 10, y + 10, messageWidth, messageHeight);
       this.ctx.fillStyle = '#fff';
-      this.ctx.fillRect(x, y, textWidth, textHeight);
+      this.ctx.fillRect(x, y, messageWidth, messageHeight);
       this.ctx.fillStyle = '#000';
       this.ctx.font = '16px PT Mono';
       this.ctx.textBaseline = 'hanging';
 
+      var context = this.ctx;
+      var maxTextWidth = messageWidth - 20;
+      var lineHeight = 20;
+      var textX = x + 10;
+      var textY = y + 10;
+
+      function wrapText(text, textWidth) {
+        var words = text.split(' ');
+        var line = '';
+
+        for(var n = 0; n < words.length; n++) {
+          var testLine = line + words[n] + ' ';
+          var metrics = context.measureText(testLine);
+          var testWidth = metrics.width;
+          if (testWidth > textWidth && n > 0) {
+            context.fillText(line, textX, textY);
+            line = words[n] + ' ';
+            textY += lineHeight;
+          } else {
+            line = testLine;
+          }
+        }
+        context.fillText(line, textX, textY);
+      }
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          this.ctx.fillText('you have won!', x + 10, 10);
+          wrapText('you have won won won won won won won won won won won won won won won!', maxTextWidth);
           break;
         case Verdict.FAIL:
-          this.ctx.fillText('you have failed!', x + 10, 10);
+          wrapText('you have failed failed failed failed failed failed failed failed failed!', maxTextWidth);
           break;
         case Verdict.PAUSE:
-          this.ctx.fillText('game is on pause!', x + 10, 10);
+          wrapText('game is on pause pause pause pause pause pause pause pause pause pause!', maxTextWidth);
           break;
         case Verdict.INTRO:
-          this.ctx.fillText('welcome to the game!', x + 10, 10);
-          this.ctx.fillText('Press Space to start', x + 10, 30);
+          wrapText('welcome to the game! Press Space to start', maxTextWidth);
           break;
       }
     },
