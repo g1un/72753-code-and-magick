@@ -408,42 +408,47 @@ window.Game = (function() {
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+      var context = this.ctx;
       var x = 200;
       var y = 0;
-      var messageWidth = 300;
-      var messageHeight = 150;
-
-      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-      this.ctx.fillRect(x + 10, y + 10, messageWidth, messageHeight);
-      this.ctx.fillStyle = '#fff';
-      this.ctx.fillRect(x, y, messageWidth, messageHeight);
-      this.ctx.fillStyle = '#000';
-      this.ctx.font = '16px PT Mono';
-      this.ctx.textBaseline = 'hanging';
-
-      var context = this.ctx;
-      var maxTextWidth = messageWidth - 20;
       var lineHeight = 20;
       var textX = x + 10;
       var textY = y + 10;
+      var messageWidth = 300;
+      var maxTextWidth = messageWidth - 2 * textY;
+
+      this.ctx.font = '16px PT Mono';
+      this.ctx.textBaseline = 'hanging';
 
       function wrapText(text, textWidth) {
         var words = text.split(' ');
         var line = '';
+        var lines = [];
 
         for(var n = 0; n < words.length; n++) {
           var testLine = line + words[n] + ' ';
           var metrics = context.measureText(testLine);
           var testWidth = metrics.width;
           if (testWidth > textWidth && n > 0) {
-            context.fillText(line, textX, textY);
+            lines.push(line);
             line = words[n] + ' ';
-            textY += lineHeight;
           } else {
             line = testLine;
           }
         }
-        context.fillText(line, textX, textY);
+        lines.push(line);
+
+        var messageHeight = textY * 2 + lineHeight * lines.length;
+
+        context.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        context.fillRect(x + 10, y + 10, messageWidth, messageHeight);
+        context.fillStyle = '#fff';
+        context.fillRect(x, y, messageWidth, messageHeight);
+        context.fillStyle = '#000';
+
+        for(var i = 0; i < lines.length; i++) {
+          context.fillText(lines[i], textX, textY + i * lineHeight);
+        }
       }
 
       switch (this.state.currentStatus) {
@@ -451,10 +456,10 @@ window.Game = (function() {
           wrapText('you have won won won won won won won won won won won won won won won!', maxTextWidth);
           break;
         case Verdict.FAIL:
-          wrapText('you have failed failed failed failed failed failed failed failed failed!', maxTextWidth);
+          wrapText('you have failed!', maxTextWidth);
           break;
         case Verdict.PAUSE:
-          wrapText('game is on pause pause pause pause pause pause pause pause pause pause!', maxTextWidth);
+          wrapText('game is on pause!', maxTextWidth);
           break;
         case Verdict.INTRO:
           wrapText('welcome to the game! Press Space to start', maxTextWidth);
